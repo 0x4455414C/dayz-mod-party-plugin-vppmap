@@ -18,7 +18,8 @@ class CfgMods
 		type = "mod";
 		dependencies[] =
 		{
-			"Mission"
+			"Mission",
+			"Game"
 		};
 		class defs
 		{
@@ -27,6 +28,13 @@ class CfgMods
 				value = "";
 				files[] = {
 					"SchanaModPartyPluginVPPMap/Mission"
+				};
+			};
+			class gameScriptModule
+			{
+				value = "";
+				files[] = {
+					"SchanaModPartyPluginVPPMap/Game"
 				};
 			};
 		};
