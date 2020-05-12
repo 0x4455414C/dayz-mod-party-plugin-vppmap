@@ -56,8 +56,10 @@ class SchanaPartyMarkerManagerServer {
     private void SendMarkerInfoToPlayer (string id, ref set<ref string> party_ids, PlayerBase player) {
         auto playerMarkers = new ref array<ref SchanaPartyMarkerInfo>;
         foreach (string party_id : party_ids) {
-            foreach (auto m : markers.Get (party_id)) {
-                playerMarkers.Insert (m);
+            if (markers.Contains (party_id)) {
+                foreach (auto m : markers.Get (party_id)) {
+                    playerMarkers.Insert (m);
+                }
             }
         }
         auto info = new ref Param1<ref array<ref SchanaPartyMarkerInfo>> (playerMarkers);
