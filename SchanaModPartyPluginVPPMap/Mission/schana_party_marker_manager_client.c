@@ -3,7 +3,7 @@ class SchanaPartyMarkerManagerClient {
     private ref array<ref SchanaPartyMarkerInfo> serverMarkers;
 
     void SchanaPartyMarkerManagerClient () {
-        SchanaPartyUtils.LogMessage ("PartyMarker Init");
+        SchanaPartyUtils.LogMessage ("PartyMarker Client Init " + MissionBase.SCHANA_PARTY_PLUGIN_VPP_MAP_VERSION);
         markers = new ref array<ref SchanaPartyMarkerInfo>;
         serverMarkers = new ref array<ref SchanaPartyMarkerInfo>;
 

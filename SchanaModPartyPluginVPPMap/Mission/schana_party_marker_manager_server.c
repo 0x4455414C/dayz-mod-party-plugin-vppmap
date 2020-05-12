@@ -2,6 +2,7 @@ class SchanaPartyMarkerManagerServer {
     private ref map<ref string, ref array<ref SchanaPartyMarkerInfo>> markers;
 
     void SchanaPartyMarkerManagerServer () {
+        SchanaPartyUtils.LogMessage ("PartyMarker Server Init " + MissionBase.SCHANA_PARTY_PLUGIN_VPP_MAP_VERSION);
         markers = new ref map<ref string, ref array<ref SchanaPartyMarkerInfo>> ();
         GetRPCManager ().AddRPC ("SchanaModPartyPluginVPPMap", "ServerRegisterMarkersRPC", this, SingleplayerExecutionType.Both);
 
