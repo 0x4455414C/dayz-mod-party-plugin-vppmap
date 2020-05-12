@@ -46,7 +46,8 @@ modded class EditDialog extends ScriptedWidgetEventHandler {
                 vector color = m_ColorListAdapter.GetSelectedColor ();
                 bool checked = m_CheckboxCustomServer.IsChecked ();
                 bool isSchanaPartyMarker = m_CheckboxSchanaPartyMarker.IsChecked ();
-                m_Menu.EditMarkerAttributes (m_MarkerIndex, name, m_MarkerSuffix, iconPath, color, m_IsCustomServerMarker, checked, isSchanaPartyMarker, m_isSchanaPartyNewMarker);
+                bool hasSchanaChangedLists = m_isSchanaPartyNewMarker || isSchanaPartyMarker != m_isSchanaPartyMarker;
+                m_Menu.EditMarkerAttributes (m_MarkerIndex, name, m_MarkerSuffix, iconPath, color, m_IsCustomServerMarker, checked, isSchanaPartyMarker, hasSchanaChangedLists);
                 m_Menu.HideDialog ();
                 return true;
             } else if (w == m_EditBoxNameOverlay) {

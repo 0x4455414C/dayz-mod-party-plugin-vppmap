@@ -181,9 +181,11 @@ modded class VPPMapMenu extends UIScriptedMenu {
 		ReloadMarkers (); //Reload all markers
 	}
 
-	void EditMarkerAttributes (int index, string name, string markerSuffix, string iconPath, vector color, bool wasCustomServer, bool isCustomServer, bool isSchanaPartyMarker, bool isNewMarker) {
+	void EditMarkerAttributes (int index, string name, string markerSuffix, string iconPath, vector color, bool wasCustomServer, bool isCustomServer, bool isSchanaPartyMarker, bool hasSchanaChangedLists) {
 		ref array<ref MarkerInfo> markers;
-		if (isSchanaPartyMarker) {
+		bool ignoreParty = wasCustomServer || isCustomServer;
+
+		if (!ignoreParty && isSchanaPartyMarker) {
 			markers = m_SchanaPartyMarkers;
 		} else if (wasCustomServer) {
 			markers = m_CustomServerMarkers;
@@ -191,11 +193,16 @@ modded class VPPMapMenu extends UIScriptedMenu {
 			markers = m_ClientMarkers;
 		}
 
-		if (isNewMarker && isSchanaPartyMarker) {
+		if (!ignoreParty && hasSchanaChangedLists && isSchanaPartyMarker) {
 			m_LastEditedMarker = m_ClientMarkers.Get (index);
 			m_ClientMarkers.Remove (index);
 			g_Game.GetClientMarkersCache ().UpdateCachedMarkerInfos (m_ClientMarkers);
 			m_SchanaPartyMarkers.Insert (m_LastEditedMarker);
+		} else if (!ignoreParty && hasSchanaChangedLists) {
+			m_LastEditedMarker = m_SchanaPartyMarkers.Get (index);
+			m_SchanaPartyMarkers.Remove (index);
+			m_ClientMarkers.Insert (m_LastEditedMarker);
+			g_Game.GetClientMarkersCache ().UpdateCachedMarkerInfos (m_ClientMarkers);
 		} else {
 			m_LastEditedMarker = markers.Get (index);
 		}
@@ -204,7 +211,7 @@ modded class VPPMapMenu extends UIScriptedMenu {
 		m_LastEditedMarker.SetIconPath (iconPath);
 		m_LastEditedMarker.SetColor (color);
 
-		if (isSchanaPartyMarker) {
+		if (!ignoreParty && (isSchanaPartyMarker || hasSchanaChangedLists)) {
 			SchanaUpdatePartyMarkers ();
 		}
 
