@@ -1,13 +1,17 @@
 modded class VPPMapMenu extends UIScriptedMenu {
 	private ref array<ref MarkerInfo> m_SchanaPartyMarkers = new ref array<ref MarkerInfo>;
+	private int m_SchanaDisplayRefreshRateLimiter = 0;
 
 	override void DisplayPlayerPosition () {
-		DisplayClientMarkers ();
-		DisplayServerMarkers ();
-		super.DisplayPlayerPosition ();
+		if (m_SchanaDisplayRefreshRateLimiter % 16 == 0) {
+			DisplayClientMarkers ();
+			DisplayServerMarkers ();
+			super.DisplayPlayerPosition ();
 
-		DisplaySchanaPartyPositions ();
-		m_Adapter.UpdateContent ();
+			DisplaySchanaPartyPositions ();
+			m_Adapter.UpdateContent ();
+		}
+		m_SchanaDisplayRefreshRateLimiter = (m_SchanaDisplayRefreshRateLimiter + 1) % 16;
 	}
 
 	void DisplaySchanaPartyPositions () {
