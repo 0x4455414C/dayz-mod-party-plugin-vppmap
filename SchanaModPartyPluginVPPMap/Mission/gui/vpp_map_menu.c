@@ -146,7 +146,7 @@ modded class VPPMapMenu extends UIScriptedMenu {
 			markers = m_ClientMarkers;
 		}
 		MarkerInfo marker = markers.Get (markerIndex);
-		m_EditDialog.SetMarker (markerIndex, marker, false, isNewMarker, markerSuffix, isSchanaPartyMarker);
+		m_EditDialog.SetMarker (markerIndex, marker, isCustomServer, isNewMarker, markerSuffix, isSchanaPartyMarker);
 	}
 
 	ref array<ref MarkerInfo> GetSchanaPartyMarkers () {
