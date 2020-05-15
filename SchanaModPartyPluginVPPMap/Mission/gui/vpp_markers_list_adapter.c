@@ -1,13 +1,20 @@
 modded class MarkersListAdapter extends ListAdapter {
     private ref HeaderItem m_SchanaPartyMarkersHeaderItem;
+    private ref HeaderItem m_SchanaPartyServerMarkersHeaderItem;
 
     void MarkersListAdapter (VPPMapMenu menu, Widget root) {
         m_SchanaPartyMarkersHeaderItem = new HeaderItem ("SchanaParty Markers");
         m_HeaderItems.Insert (m_SchanaPartyMarkersHeaderItem);
+        m_SchanaPartyServerMarkersHeaderItem = new HeaderItem ("SchanaParty Remote Markers");
+        m_HeaderItems.Insert (m_SchanaPartyServerMarkersHeaderItem);
     }
 
     HeaderItem GetSchanaPartyMarkersHeaderItem () {
         return m_SchanaPartyMarkersHeaderItem;
+    }
+
+    HeaderItem GetSchanaPartyServerMarkersHeaderItem () {
+        return m_SchanaPartyServerMarkersHeaderItem;
     }
 
     override void OnItemClicked (string widgetName, VPPMapItem item) {
@@ -60,6 +67,7 @@ modded class MarkersListAdapter extends ListAdapter {
         bool isClientMarker = false;
         bool isCustomServerMarker = false;
         bool isSchanaPartyMarker = false;
+        bool isSchanaPartyServerMarker = false;
         foreach (VerticalItem item : items) {
             item.SetVisible (visibleState);
             if (item.IsInherited (ListItem)) {
@@ -70,19 +78,21 @@ modded class MarkersListAdapter extends ListAdapter {
                     isCustomServerMarker = true;
                 } else if (listItem.m_HeaderParent == GetSchanaPartyMarkersHeaderItem ()) {
                     isSchanaPartyMarker = true;
+                } else if (listItem.m_HeaderParent == GetSchanaPartyServerMarkersHeaderItem ()) {
+                    isSchanaPartyServerMarker = true;
                 }
                 markerIndexes.Insert (listItem.m_MarkerIndex);
             }
         }
         switch (visibleState) {
             case VisibleState.NOT_VISIBLE:
-                m_Menu.EditMarkerVisibility (markerIndexes, false, false, isClientMarker, isCustomServerMarker, isSchanaPartyMarker);
+                m_Menu.EditMarkerVisibility (markerIndexes, false, false, isClientMarker, isCustomServerMarker, isSchanaPartyMarker, isSchanaPartyServerMarker);
                 break;
             case VisibleState.VISIBLE_ONLY_2D:
-                m_Menu.EditMarkerVisibility (markerIndexes, true, false, isClientMarker, isCustomServerMarker, isSchanaPartyMarker);
+                m_Menu.EditMarkerVisibility (markerIndexes, true, false, isClientMarker, isCustomServerMarker, isSchanaPartyMarker, isSchanaPartyServerMarker);
                 break;
             case VisibleState.VISIBLE_2D_AND_3D:
-                m_Menu.EditMarkerVisibility (markerIndexes, true, true, isClientMarker, isCustomServerMarker, isSchanaPartyMarker);
+                m_Menu.EditMarkerVisibility (markerIndexes, true, true, isClientMarker, isCustomServerMarker, isSchanaPartyMarker, isSchanaPartyServerMarker);
                 break;
         }
     }

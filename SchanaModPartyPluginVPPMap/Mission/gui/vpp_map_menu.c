@@ -1,5 +1,6 @@
 modded class VPPMapMenu extends UIScriptedMenu {
 	private ref array<ref MarkerInfo> m_SchanaPartyMarkers = new ref array<ref MarkerInfo>;
+	private ref array<ref MarkerInfo> m_SchanaPartyServerMarkers = new ref array<ref MarkerInfo>;
 	private int m_SchanaDisplayRefreshRateLimiter = 0;
 
 	override void DisplayPlayerPosition () {
@@ -25,17 +26,6 @@ modded class VPPMapMenu extends UIScriptedMenu {
 				}
 			}
 		}
-
-		auto partyMarkerClient = GetSchanaPartyMarkerManagerClient ();
-
-		if (partyMarkerClient) {
-			auto serverMarkers = partyMarkerClient.GetServerMarkers ();
-			if (serverMarkers) {
-				foreach (auto serverMarker : serverMarkers) {
-					m_MapWidget.AddUserMark (serverMarker.GetPosition (), serverMarker.GetName (), ARGB (255, 255, 255, 0), "VanillaPPMap\\GUI\\Textures\\CustomMapIcons\\waypointeditor_CA.paa");
-				}
-			}
-		}
 	}
 
 	override void DisplayClientMarkers () {
@@ -49,6 +39,32 @@ modded class VPPMapMenu extends UIScriptedMenu {
 
 		headerItem = m_Adapter.GetSchanaPartyMarkersHeaderItem ();
 		BuildClientHeaderItem (headerItem, m_SchanaPartyMarkers);
+
+		auto partyMarkerClient = GetSchanaPartyMarkerManagerClient ();
+		if (partyMarkerClient && partyMarkerClient.GetHaveServerMarkersChanged ()) {
+			auto serverMarkers = partyMarkerClient.GetServerMarkers ();
+			if (serverMarkers != NULL) {
+				VerticalItem verticalItem = VerticalItem.Cast (m_Adapter.GetSchanaPartyServerMarkersHeaderItem ());
+				bool is2dActive = false;
+				bool is3dActive = false;
+				switch (verticalItem.m_VisibleState) {
+					case VisibleState.VISIBLE_ONLY_2D:
+						is2dActive = true;
+						break;
+					case VisibleState.VISIBLE_2D_AND_3D:
+						is2dActive = true;
+						is3dActive = true;
+						break;
+				}
+				m_SchanaPartyServerMarkers.Clear ();
+				foreach (auto serverMarker : serverMarkers) {
+					m_SchanaPartyServerMarkers.Insert (new MarkerInfo (serverMarker.GetName (), "VanillaPPMap\\GUI\\Textures\\CustomMapIcons\\waypointeditor_CA.paa", Vector (255, 255, 0), serverMarker.GetPosition (), is2dActive, is3dActive));
+				}
+			}
+		}
+
+		headerItem = m_Adapter.GetSchanaPartyServerMarkersHeaderItem ();
+		BuildClientHeaderItem (headerItem, m_SchanaPartyServerMarkers);
 
 		m_Adapter.UpdateContent ();
 	}
@@ -153,11 +169,13 @@ modded class VPPMapMenu extends UIScriptedMenu {
 		return m_SchanaPartyMarkers;
 	}
 
-	void EditMarkerVisibility (array<int> indexes, bool show2D, bool show3D, bool isClientMarker, bool isCustomServerMarker, bool isSchanaPartyMarker) {
+	void EditMarkerVisibility (array<int> indexes, bool show2D, bool show3D, bool isClientMarker, bool isCustomServerMarker, bool isSchanaPartyMarker, bool isSchanaPartyServerMarker) {
 		array<ref MarkerInfo> markers;
 		foreach (int index : indexes) {
 			if (isSchanaPartyMarker) {
 				markers = m_SchanaPartyMarkers;
+			} else if (isSchanaPartyServerMarker) {
+				markers = m_SchanaPartyServerMarkers;
 			} else if (isClientMarker) {
 				markers = m_ClientMarkers;
 			} else if (isCustomServerMarker) {

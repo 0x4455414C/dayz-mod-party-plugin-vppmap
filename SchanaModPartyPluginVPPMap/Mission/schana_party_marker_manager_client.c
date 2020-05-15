@@ -1,6 +1,7 @@
 class SchanaPartyMarkerManagerClient {
     private ref array<ref SchanaPartyMarkerInfo> markers;
     private ref array<ref SchanaPartyMarkerInfo> serverMarkers;
+    private bool haveServerMarkersChanged = false;
 
     void SchanaPartyMarkerManagerClient () {
         SchanaPartyUtils.LogMessage ("PartyMarker Client Init " + MissionBase.SCHANA_PARTY_PLUGIN_VPP_MAP_VERSION);
@@ -21,6 +22,7 @@ class SchanaPartyMarkerManagerClient {
     void ClientUpdatePartyMarkers (ref array<ref SchanaPartyMarkerInfo> newServerMarkers) {
         SchanaPartyUtils.LogMessage ("ClientUpdatePartyMarkers");
         serverMarkers = newServerMarkers;
+        haveServerMarkersChanged = true;
     }
 
     void Add (SchanaPartyMarkerInfo marker) {
@@ -31,7 +33,12 @@ class SchanaPartyMarkerManagerClient {
         markers.Clear ();
     }
 
+    bool GetHaveServerMarkersChanged () {
+        return haveServerMarkersChanged;
+    }
+
     ref array<ref SchanaPartyMarkerInfo> GetServerMarkers () {
+        haveServerMarkersChanged = false;
         return serverMarkers;
     }
 
